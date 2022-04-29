@@ -8,7 +8,7 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	session, err := storage.Store.New(r, "user-storage")
+	session, err := storage.Store.Get(r, "user-storage")
 	if err != nil {
 		log.Println(err)
 	}
@@ -29,7 +29,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		session.Values["userId"] = ""
 		http.Error(w, "forbiden", http.StatusForbidden)
 	}
-
 	log.Println(session.Save(r, w))
 }
 
