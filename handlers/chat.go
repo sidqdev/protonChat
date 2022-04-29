@@ -10,7 +10,12 @@ import (
 func GetChat(w http.ResponseWriter, r *http.Request) {
 	session, _ := storage.Store.Get(r, "session")
 	username := r.URL.Query().Get("username")
-	userId := session.Values["userId"].(string)
+	userIdInterface := session.Values["userId"]
+	if userIdInterface == nil {
+		http.Error(w, "please login before get chat", http.StatusForbidden)
+		return
+	}
+	userId := userIdInterface.(string)
 	myUsername, status := storage.Users.GetUserName(userId)
 	if !status {
 		http.Error(w, "please login before get chat", http.StatusForbidden)
