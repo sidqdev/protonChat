@@ -32,7 +32,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 func GetMe(w http.ResponseWriter, r *http.Request) {
 	session, _ := storage.Store.Get(r, "session")
-	userId := session.Values["userId"].(string)
+	userIdInterface := session.Values["userId"]
+	if userIdInterface == nil {
+		http.Error(w, "please login before get chat", http.StatusForbidden)
+		return
+	}
+	userId := userIdInterface.(string)
 	username, status := storage.Users.GetUserName(userId)
 	if status {
 		http.Error(w, username, http.StatusOK)
