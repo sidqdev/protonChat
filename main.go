@@ -21,5 +21,6 @@ func main() {
 	route.HandleFunc("/getMe", handlers.GetMe).Methods("GET")
 	route.HandleFunc("/getChat", handlers.GetChat).Methods("GET")
 	route.HandleFunc("/sendMessage", handlers.SendMessage).Methods("PUT")
+	route.HandleFunc("/getUpdates", handlers.GetUpdates).Methods("GET")
 	http.ListenAndServe("localhost:8060", route)
 }
