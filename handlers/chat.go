@@ -9,7 +9,6 @@ import (
 
 func GetChat(w http.ResponseWriter, r *http.Request) {
 	session, _ := storage.Store.Get(r, "session")
-	username := r.URL.Query().Get("username")
 	userIdInterface := session.Values["userId"]
 	if userIdInterface == nil {
 		http.Error(w, "please login before get chat", http.StatusForbidden)
@@ -21,6 +20,7 @@ func GetChat(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "please login before get chat", http.StatusForbidden)
 		return
 	}
+	username := r.URL.Query().Get("username")
 	if status := storage.Users.CheckUserExist(username); !status {
 		http.Error(w, "user not found", http.StatusNotFound)
 		return
@@ -32,4 +32,7 @@ func GetChat(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(respone)
 
 	session.Save(r, w)
+}
+
+func SendMessage(w http.ResponseWriter, r *http.Request) {
 }

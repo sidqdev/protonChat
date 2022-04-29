@@ -27,7 +27,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "forbiden", http.StatusForbidden)
 	}
 
-	session.Save(r, w)
+	log.Println(session.Save(r, w))
 }
 
 func GetMe(w http.ResponseWriter, r *http.Request) {
