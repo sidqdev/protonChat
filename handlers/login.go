@@ -11,6 +11,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	session, err := storage.Store.Get(r, "user-storage")
 	if err != nil {
 		log.Println(err)
+		http.Error(w, "error get session", http.StatusInternalServerError)
+		return
 	}
 	decoder := json.NewDecoder(r.Body)
 	var u storage.User
