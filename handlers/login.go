@@ -31,6 +31,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
+	log.Println("Logout")
 	session, _ := storage.Store.Get(r, "user-storage")
 	userIdInterface := session.Values["userId"]
 	if userIdInterface == nil {
@@ -44,6 +45,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetMe(w http.ResponseWriter, r *http.Request) {
+	log.Println("Get me")
 	session, _ := storage.Store.Get(r, "user-storage")
 	userIdInterface := session.Values["userId"]
 	if userIdInterface == nil {

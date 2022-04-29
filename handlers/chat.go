@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"main/storage"
 	"main/structs"
 	"net/http"
 )
 
 func GetChat(w http.ResponseWriter, r *http.Request) {
+	log.Println("Get chat")
 	session, _ := storage.Store.Get(r, "user-storage")
 	userIdInterface := session.Values["userId"]
 	if userIdInterface == nil {
@@ -35,6 +37,7 @@ func GetChat(w http.ResponseWriter, r *http.Request) {
 }
 
 func SendMessage(w http.ResponseWriter, r *http.Request) {
+	log.Println("Send message")
 	session, _ := storage.Store.Get(r, "user-storage")
 	userIdInterface := session.Values["userId"]
 	if userIdInterface == nil {
@@ -58,6 +61,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUpdates(w http.ResponseWriter, r *http.Request) {
+	log.Println("Get updates")
 	session, _ := storage.Store.Get(r, "user-storage")
 	userIdInterface := session.Values["userId"]
 	if userIdInterface == nil {
