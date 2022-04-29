@@ -17,6 +17,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		log.Println("Login error")
 		return
 	}
+	if len(u.UserName) < 4 || len(u.Password) < 4 {
+		http.Error(w, "short username or password", http.StatusNotAcceptable) // 406
+	}
 	log.Println("Login", u.UserName, u.Password)
 	status, userId := storage.Users.LoginUser(u)
 	if status {
