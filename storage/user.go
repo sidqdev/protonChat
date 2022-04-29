@@ -1,6 +1,10 @@
 package storage
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
+
 	"github.com/google/uuid"
 )
 
@@ -12,6 +16,30 @@ type User struct {
 
 type UserStorage struct {
 	Users []User `json:"users"`
+}
+
+func (us *UserStorage) Save() {
+	content, err := json.Marshal(us)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = ioutil.WriteFile("UserStorage.json", content, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func (us *UserStorage) Load() {
+	content, err := ioutil.ReadFile("UserStorage.json")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = json.Unmarshal(content, &us)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (us *UserStorage) LoginUser(user User) (bool, string) {
@@ -31,6 +59,7 @@ func (us *UserStorage) LoginUser(user User) (bool, string) {
 
 	user.UserID = userId
 	us.Users = append(us.Users, user)
+	us.Save()
 	return true, userId
 }
 
@@ -40,6 +69,7 @@ func (us *UserStorage) Logout(userId string) {
 			u.UserID = ""
 		}
 	}
+	us.Save()
 }
 
 func (us *UserStorage) GetUserName(userId string) (string, bool) {

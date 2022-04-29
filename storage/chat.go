@@ -1,5 +1,11 @@
 package storage
 
+import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
+)
+
 type Message struct {
 	Text     string `json:"text"`         // only text
 	FromUser string `json:"fromUsername"` // means username
@@ -12,6 +18,30 @@ func (m *Message) IsBelongs(username1, username2 string) bool {
 
 type MessageStorage struct {
 	Messages []Message `json:"messages"`
+}
+
+func (us *MessageStorage) Save() {
+	content, err := json.Marshal(us)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = ioutil.WriteFile("MessageStorage.json", content, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func (us *MessageStorage) Load() {
+	content, err := ioutil.ReadFile("MessageStorage.json")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = json.Unmarshal(content, &us)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (m *MessageStorage) GetMessages(fromUser, toUser string) []Message {
@@ -33,8 +63,33 @@ type UpdateStorage struct {
 	Messages []Message `json:"messages"`
 }
 
+func (us *UpdateStorage) Save() {
+	content, err := json.Marshal(us)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = ioutil.WriteFile("UpdateStorage.json", content, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func (us *UpdateStorage) Load() {
+	content, err := ioutil.ReadFile("UpdateStorage.json")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = json.Unmarshal(content, &us)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func (u *UpdateStorage) SendMessage(message Message) {
 	u.Messages = append(u.Messages, message)
+	u.Save()
 }
 
 func (u *UpdateStorage) GetUpdates(username string) []Message {
@@ -48,5 +103,6 @@ func (u *UpdateStorage) GetUpdates(username string) []Message {
 			i += 1
 		}
 	}
+	u.Save()
 	return updates
 }

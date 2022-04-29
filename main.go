@@ -10,9 +10,9 @@ import (
 )
 
 func main() {
-	storage.Store.Options.Path = "/"
-	storage.Store.Options.MaxAge = 0
-	storage.Store.Options.Domain = ""
+	storage.Users.Load()
+	storage.Messages.Load()
+	storage.Updates.Load()
 
 	log.Println("Init server")
 	route := mux.NewRouter()
