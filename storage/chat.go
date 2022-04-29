@@ -1,9 +1,9 @@
 package storage
 
 type Message struct {
-	Text     string `json:"text"`     // only text
-	FromUser string `json:"fromUser"` // means username
-	ToUser   string `json:"toUser"`   // also means username
+	Text     string `json:"text"`         // only text
+	FromUser string `json:"fromUsername"` // means username
+	ToUser   string `json:"toUsername"`   // also means username
 }
 
 func (m *Message) IsBelongs(username1, username2 string) bool {
