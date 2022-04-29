@@ -6,10 +6,20 @@ type Message struct {
 	ToUser   string `json:"toUser"`   // also means username
 }
 
+func (m *Message) IsBelongs(username1, username2 string) bool {
+	return (m.FromUser == username1 && m.ToUser == username2) || (m.FromUser == username2 && m.ToUser == username1)
+}
+
 type MessageStorage struct {
 	Messages []Message `json:"messages"`
 }
 
 func (m *MessageStorage) GetMessages(fromUser, toUser string) []Message {
-	return nil
+	messages := []Message{}
+	for _, message := range m.Messages {
+		if message.IsBelongs(fromUser, toUser) {
+			messages = append(messages, message)
+		}
+	}
+	return messages
 }
