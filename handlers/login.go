@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"main/storage"
 	"net/http"
 )
@@ -13,7 +14,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&u)
 	if err != nil {
 		http.Error(w, http.ErrBodyNotAllowed.Error(), http.StatusConflict)
+		log.Println("Login error")
+		return
 	}
+	log.Println("Login", u.Login, u.Password)
 	status, userId := storage.Users.LoginUser(u)
 	if status {
 		session.Values["userId"] = userId
