@@ -8,7 +8,7 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	session, _ := storage.Store.Get(r, "user-storage")
+	session, _ := storage.Store.New(r, "user-storage")
 	decoder := json.NewDecoder(r.Body)
 	var u storage.User
 	err := decoder.Decode(&u)
