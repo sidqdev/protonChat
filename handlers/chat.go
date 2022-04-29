@@ -32,8 +32,6 @@ func GetChat(w http.ResponseWriter, r *http.Request) {
 
 	respone := structs.GetChatResponse{MyUsername: myUsername, Username: username, Messages: messages}
 	json.NewEncoder(w).Encode(respone)
-
-	session.Save(r, w)
 }
 
 func SendMessage(w http.ResponseWriter, r *http.Request) {
