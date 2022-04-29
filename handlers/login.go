@@ -8,7 +8,7 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	session, _ := storage.Store.New(r, "session")
+	session, _ := storage.Store.Get(r, "user-storage")
 	decoder := json.NewDecoder(r.Body)
 	var u storage.User
 	err := decoder.Decode(&u)
@@ -31,7 +31,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetMe(w http.ResponseWriter, r *http.Request) {
-	session, _ := storage.Store.Get(r, "session")
+	session, _ := storage.Store.Get(r, "user-storage")
 	userIdInterface := session.Values["userId"]
 	if userIdInterface == nil {
 		http.Error(w, "please login before get chat", http.StatusForbidden)
