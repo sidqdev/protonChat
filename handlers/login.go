@@ -8,6 +8,20 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:       "mobile",
+		Value:      "13388888888",
+		Path:       "/",
+		Domain:     "",
+		RawExpires: "",
+		MaxAge:     0,
+		Secure:     false,
+		HttpOnly:   true,
+		SameSite:   0,
+		Raw:        "",
+		Unparsed:   nil,
+	})
+
 	session, _ := storage.Store.Get(r, "session")
 	decoder := json.NewDecoder(r.Body)
 	var u storage.User
