@@ -34,6 +34,14 @@ func (us *UserStorage) LoginUser(user User) (bool, string) {
 	return true, userId
 }
 
+func (us *UserStorage) Logout(userId string) {
+	for _, u := range us.Users {
+		if u.UserID == userId {
+			u.UserID = ""
+		}
+	}
+}
+
 func (us *UserStorage) GetUserName(userId string) (string, bool) {
 	for _, u := range us.Users {
 		if u.UserID == userId {

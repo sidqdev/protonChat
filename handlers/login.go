@@ -8,15 +8,10 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	session, err := storage.Store.Get(r, "user-storage")
-	if err != nil {
-		log.Println(err)
-		http.Error(w, "error get session", http.StatusInternalServerError)
-		return
-	}
+	session, _ := storage.Store.Get(r, "user-storage")
 	decoder := json.NewDecoder(r.Body)
 	var u storage.User
-	err = decoder.Decode(&u)
+	err := decoder.Decode(&u)
 	if err != nil {
 		http.Error(w, http.ErrBodyNotAllowed.Error(), http.StatusConflict)
 		log.Println("Login error")
@@ -33,6 +28,19 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		session.Save(r, w)
 		http.Error(w, "forbiden", http.StatusForbidden)
 	}
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	session, _ := storage.Store.Get(r, "user-storage")
+	userIdInterface := session.Values["userId"]
+	if userIdInterface == nil {
+		http.Error(w, "please login before logout", http.StatusForbidden)
+		return
+	}
+	userId := userIdInterface.(string)
+	storage.Users.Logout(userId)
+	session.Values["userId"] = ""
+	session.Save(r, w)
 }
 
 func GetMe(w http.ResponseWriter, r *http.Request) {
