@@ -24,12 +24,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	status, userId := storage.Users.LoginUser(u)
 	if status {
 		session.Values["userId"] = userId
+		session.Save(r, w)
 		http.Error(w, "accepted", http.StatusAccepted)
 	} else {
 		session.Values["userId"] = ""
+		session.Save(r, w)
 		http.Error(w, "forbiden", http.StatusForbidden)
 	}
-	log.Println(session.Save(r, w))
 }
 
 func GetMe(w http.ResponseWriter, r *http.Request) {
