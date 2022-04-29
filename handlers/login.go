@@ -17,7 +17,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		log.Println("Login error")
 		return
 	}
-	log.Println("Login", u.Login, u.Password)
+	log.Println("Login", u.UserName, u.Password)
 	status, userId := storage.Users.LoginUser(u)
 	if status {
 		session.Values["userId"] = userId
@@ -28,4 +28,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session.Save(r, w)
+}
+
+func GetMe(w http.ResponseWriter, r *http.Request) {
+	session, _ := storage.Store.Get(r, "session")
+	userId := session.Values["userId"].(string)
+	username, status := storage.Users.GetUserName(userId)
+	if status {
+		http.Error(w, username, http.StatusOK)
+	} else {
+		http.Error(w, "forbiden", http.StatusForbidden)
+	}
 }
