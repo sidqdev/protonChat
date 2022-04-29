@@ -8,10 +8,13 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	session, _ := storage.Store.New(r, "user-storage")
+	session, err := storage.Store.New(r, "user-storage")
+	if err != nil {
+		log.Println(err)
+	}
 	decoder := json.NewDecoder(r.Body)
 	var u storage.User
-	err := decoder.Decode(&u)
+	err = decoder.Decode(&u)
 	if err != nil {
 		http.Error(w, http.ErrBodyNotAllowed.Error(), http.StatusConflict)
 		log.Println("Login error")
