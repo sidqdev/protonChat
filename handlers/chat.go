@@ -56,3 +56,20 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 	message.FromUser = myUsername
 	storage.Messages.SendMessage(message)
 }
+
+func GetUpdates(w http.ResponseWriter, r *http.Request) {
+	session, _ := storage.Store.Get(r, "user-storage")
+	userIdInterface := session.Values["userId"]
+	if userIdInterface == nil {
+		http.Error(w, "please login before get updates", http.StatusForbidden)
+		return
+	}
+	userId := userIdInterface.(string)
+	myUsername, status := storage.Users.GetUserName(userId)
+	if !status {
+		http.Error(w, "please login before get updates", http.StatusForbidden)
+		return
+	}
+	updates := storage.Updates.GetUpdates(myUsername)
+	json.NewEncoder(w).Encode(updates)
+}

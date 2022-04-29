@@ -26,4 +26,27 @@ func (m *MessageStorage) GetMessages(fromUser, toUser string) []Message {
 
 func (m *MessageStorage) SendMessage(message Message) {
 	m.Messages = append(m.Messages, message)
+	Updates.SendMessage(message)
+}
+
+type UpdateStorage struct {
+	Messages []Message `json:"messages"`
+}
+
+func (u *UpdateStorage) SendMessage(message Message) {
+	u.Messages = append(u.Messages, message)
+}
+
+func (u *UpdateStorage) GetUpdates(username string) []Message {
+	updates := []Message{}
+	i := 0
+	for i < len(u.Messages) {
+		if u.Messages[i].ToUser == username {
+			updates = append(updates, u.Messages[i])
+			u.Messages = append(u.Messages[:i], u.Messages[i+1:]...)
+		} else {
+			i += 1
+		}
+	}
+	return updates
 }

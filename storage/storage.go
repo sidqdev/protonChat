@@ -8,4 +8,5 @@ var (
 	Store    = sessions.NewCookieStore(key)
 	Users    = UserStorage{}
 	Messages = MessageStorage{}
+	Updates  = UpdateStorage{}
 )
