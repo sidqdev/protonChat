@@ -23,3 +23,7 @@ func (m *MessageStorage) GetMessages(fromUser, toUser string) []Message {
 	}
 	return messages
 }
+
+func (m *MessageStorage) SendMessage(message Message) {
+	m.Messages = append(m.Messages, message)
+}

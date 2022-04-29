@@ -20,5 +20,6 @@ func main() {
 	route.HandleFunc("/logout", handlers.Logout).Methods("GET")
 	route.HandleFunc("/getMe", handlers.GetMe).Methods("GET")
 	route.HandleFunc("/getChat", handlers.GetChat).Methods("GET")
+	route.HandleFunc("/sendMessage", handlers.SendMessage).Methods("PUT")
 	http.ListenAndServe("localhost:8060", route)
 }
