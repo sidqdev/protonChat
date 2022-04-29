@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"main/handlers"
 	"net/http"
 
@@ -8,8 +9,8 @@ import (
 )
 
 func main() {
+	log.Println("Init server")
 	route := mux.NewRouter()
 	route.HandleFunc("/login", handlers.Login).Methods("POST")
-
 	http.ListenAndServe("0.0.0.0:8060", route)
 }
