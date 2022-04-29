@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"sync"
 
 	"github.com/google/uuid"
 )
@@ -16,9 +17,11 @@ type User struct {
 
 type UserStorage struct {
 	Users []User `json:"users"`
+	mu    sync.Mutex
 }
 
 func (us *UserStorage) Save() {
+	us.mu.Lock()
 	content, err := json.Marshal(us)
 	if err != nil {
 		log.Println(err)
@@ -28,6 +31,7 @@ func (us *UserStorage) Save() {
 	if err != nil {
 		log.Println(err)
 	}
+	us.mu.Unlock()
 }
 
 func (us *UserStorage) Load() {
@@ -59,7 +63,7 @@ func (us *UserStorage) LoginUser(user User) (bool, string) {
 
 	user.UserID = userId
 	us.Users = append(us.Users, user)
-	us.Save()
+	go us.Save()
 	return true, userId
 }
 
@@ -69,7 +73,7 @@ func (us *UserStorage) Logout(userId string) {
 			u.UserID = ""
 		}
 	}
-	us.Save()
+	go us.Save()
 }
 
 func (us *UserStorage) GetUserName(userId string) (string, bool) {

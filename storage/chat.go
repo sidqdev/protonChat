@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"sync"
 )
 
 type Message struct {
@@ -18,10 +19,12 @@ func (m *Message) IsBelongs(username1, username2 string) bool {
 
 type MessageStorage struct {
 	Messages []Message `json:"messages"`
+	mu       sync.Mutex
 }
 
-func (us *MessageStorage) Save() {
-	content, err := json.Marshal(us)
+func (m *MessageStorage) Save() {
+	m.mu.Lock()
+	content, err := json.Marshal(m)
 	if err != nil {
 		log.Println(err)
 		return
@@ -30,15 +33,16 @@ func (us *MessageStorage) Save() {
 	if err != nil {
 		log.Println(err)
 	}
+	m.mu.Unlock()
 }
 
-func (us *MessageStorage) Load() {
+func (m *MessageStorage) Load() {
 	content, err := ioutil.ReadFile("MessageStorage.json")
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	err = json.Unmarshal(content, &us)
+	err = json.Unmarshal(content, &m)
 	if err != nil {
 		log.Println(err)
 	}
@@ -57,14 +61,17 @@ func (m *MessageStorage) GetMessages(fromUser, toUser string) []Message {
 func (m *MessageStorage) SendMessage(message Message) {
 	m.Messages = append(m.Messages, message)
 	Updates.SendMessage(message)
+	go m.Save()
 }
 
 type UpdateStorage struct {
 	Messages []Message `json:"messages"`
+	mu       sync.Mutex
 }
 
-func (us *UpdateStorage) Save() {
-	content, err := json.Marshal(us)
+func (u *UpdateStorage) Save() {
+	u.mu.Lock()
+	content, err := json.Marshal(u)
 	if err != nil {
 		log.Println(err)
 		return
@@ -73,15 +80,16 @@ func (us *UpdateStorage) Save() {
 	if err != nil {
 		log.Println(err)
 	}
+	u.mu.Unlock()
 }
 
-func (us *UpdateStorage) Load() {
+func (u *UpdateStorage) Load() {
 	content, err := ioutil.ReadFile("UpdateStorage.json")
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	err = json.Unmarshal(content, &us)
+	err = json.Unmarshal(content, &u)
 	if err != nil {
 		log.Println(err)
 	}
@@ -89,7 +97,7 @@ func (us *UpdateStorage) Load() {
 
 func (u *UpdateStorage) SendMessage(message Message) {
 	u.Messages = append(u.Messages, message)
-	u.Save()
+	go u.Save()
 }
 
 func (u *UpdateStorage) GetUpdates(username string) []Message {
@@ -103,6 +111,6 @@ func (u *UpdateStorage) GetUpdates(username string) []Message {
 			i += 1
 		}
 	}
-	u.Save()
+	go u.Save()
 	return updates
 }
